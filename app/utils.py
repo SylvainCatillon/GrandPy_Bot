@@ -1,3 +1,5 @@
+import requests
+
 from .stopwords_fr import stopwords_list
 
 class Parser:
@@ -43,3 +45,20 @@ class Parser:
         if not parsed_list:
             parsed_list = self.parse_by_filter(words_list)
         return parsed_list
+
+class ApiGetter:
+
+    def __init__(self, google_key):
+        self.google_key = google_key
+
+    def _request_adress(self, query):
+        raw_result = requests.get(
+            "https://maps.googleapis.com/maps/api/place/findplacefromtext/json\
+?input={}&language=fr&inputtype=textquery&fields=formatted_address,name,\
+geometry&language=french&key={}".format(query, self.google_key))
+        return raw_result.json()
+
+    def get_adress(self, words_list):
+        query = " ".join(words_list)
+        result = self._request_adress(query)
+        return result["candidates"][0]["formatted_address"]
