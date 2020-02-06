@@ -48,17 +48,38 @@ class Parser:
 
 class ApiGetter:
 
-    def __init__(self, google_key):
+    def __init__(self, google_key, words_list):
         self.google_key = google_key
+        self.words_list = words_list
 
-    def _request_adress(self, query):
+    def _request_address(self, query):
+        payload = {
+            "input": query,
+            "inputtype": "textquery",
+            "fields": "formatted_address,geometry",
+            "key": self.google_key}
         raw_result = requests.get(
-            "https://maps.googleapis.com/maps/api/place/findplacefromtext/json\
-?input={}&language=fr&inputtype=textquery&fields=formatted_address,name,\
-geometry&language=french&key={}".format(query, self.google_key))
+            "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
+            params=payload)
         return raw_result.json()
 
-    def get_adress(self, words_list):
-        query = " ".join(words_list)
-        result = self._request_adress(query)
-        return result["candidates"][0]["formatted_address"]
+    def get_address(self): # to rename
+        query = " ".join(self.words_list)
+        result = self._request_address(query)
+        address = result["candidates"][0]["formatted_address"]
+        geoloc = result["candidates"][0]["geometry"]["location"]
+        return address, geoloc
+
+    def construct_static_map_url(self, geoloc):
+        payload = {
+            "zoom": 15,
+            "size": "300x150",
+            "markers": "{lat},{lng}".format(**geoloc),
+            "key": self.google_key}
+        return "https://maps.googleapis.com/maps/api/staticmap?zoom={zoom}&\
+size={size}&markers={markers}&key={key}".format(**payload)
+
+    def main(self):
+        address, geoloc = self.get_address()
+        static_map_url = self.construct_static_map_url(geoloc)
+        return address, static_map_url

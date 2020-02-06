@@ -4,6 +4,16 @@ $(function() {
 		event.preventDefault();
 		event.stopPropagation();
 		var request = new XMLHttpRequest();
+		request.onreadystatechange = function() {
+			if (this.readyState == XMLHttpRequest.DONE) {
+				if (this.status == 200) {
+					var result = JSON.parse(this.responseText);
+					var dialog_box = $("#dialog_box")
+					dialog_box.append("<p>"+result.address+"</p><p><img src='"+result.static_map_url+"' alt='carte du lieu'<p>");
+					dialog_box.scrollTop(dialog_box[0].scrollHeight);
+				}
+			}
+		}
 		var url = window.location.href + "getResponse?user_message=" + user_message;
 		request.open("GET", url);
 		request.send();

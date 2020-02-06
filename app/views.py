@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request
 
+from instance import config as instance_config
+from .utils import Parser, ApiGetter
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -9,9 +12,13 @@ def index():
 @app.route("/getResponse")
 def getResponse():
     user_message = request.args.get("user_message")
-    print(user_message)
-    print(type(user_message))
-    return {"message": "test"}
+    parsed_message = Parser().parse(user_message)
+    api_getter = ApiGetter(instance_config.GOOGLE_API_KEY, parsed_message)
+    address, static_map_url = api_getter.main()
+    grandpy_sentence = "Ahhhh, oui, je me souviens de cette adresse! c'est: "
+    return {
+        "address":  grandpy_sentence+address,
+        "static_map_url": static_map_url}
 
 if __name__ == "__main__":
     app.run()
