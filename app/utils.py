@@ -56,7 +56,7 @@ class ApiGetter:
         payload = {
             "input": query,
             "inputtype": "textquery",
-            "fields": "formatted_address,geometry",
+            "fields": "formatted_address,geometry,name",
             "key": self.google_key}
         raw_result = requests.get(
             "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
@@ -68,7 +68,8 @@ class ApiGetter:
         result = self._request_address(query)
         address = result["candidates"][0]["formatted_address"]
         geoloc = result["candidates"][0]["geometry"]["location"]
-        return address, geoloc
+        name = result["candidates"][0]["name"]
+        return address, geoloc, name
 
     def construct_static_map_url(self, geoloc):
         payload = {
@@ -80,6 +81,6 @@ class ApiGetter:
 size={size}&markers={markers}&key={key}".format(**payload)
 
     def main(self):
-        address, geoloc = self.get_address()
+        address, geoloc, name = self.get_address()
         static_map_url = self.construct_static_map_url(geoloc)
-        return address, static_map_url
+        return address, static_map_url, name
