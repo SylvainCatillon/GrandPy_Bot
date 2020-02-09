@@ -80,7 +80,39 @@ class ApiGetter:
         return "https://maps.googleapis.com/maps/api/staticmap?zoom={zoom}&\
 size={size}&markers={markers}&key={key}".format(**payload)
 
+    def _request_wikipedia(self, geoloc):
+        payload = {
+        "action": "query",
+        "generator": "geosearch",
+        "ggscoord": "{lat}|{lng}".format(**geoloc),
+        "ggsradius": 500,
+        "ggslimit": 20,
+        "format": "json",
+        "prop": "extracts",
+        "exsentences": 4,
+        "explaintext": 1,
+        "exintro": 1
+        }
+        raw_result = requests.get(
+            "https://fr.wikipedia.org/w/api.php",
+            params=payload)
+        intros = []
+        for page in raw_result.json()["query"]["pages"].values():
+            intros.append(page["extract"])
+        return intros
+
+    def _select_intro(self, intros):
+        max_len = 0
+        selected_intro = None
+        for intro in intros:
+            intro_len = len(intro)
+            if intro_len > max_len:
+                selected_intro = intro
+                max_len = intro_len
+        return selected_intro
+
     def main(self):
         address, geoloc, name = self.get_address()
         static_map_url = self.construct_static_map_url(geoloc)
-        return address, static_map_url, name
+        story = self._select_intro(self._request_wikipedia(geoloc))
+        return address, static_map_url, name, story
