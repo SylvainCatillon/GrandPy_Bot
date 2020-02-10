@@ -61,15 +61,19 @@ class ApiGetter:
         raw_result = requests.get(
             "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
             params=payload)
+        # if raw_result.status_code == 200?
         return raw_result.json()
 
     def get_address(self): # to rename
         query = " ".join(self.words_list)
         result = self._request_address(query)
-        address = result["candidates"][0]["formatted_address"]
-        geoloc = result["candidates"][0]["geometry"]["location"]
-        name = result["candidates"][0]["name"]
-        return address, geoloc, name
+        if result["status"].lower() == "ok":
+            address = result["candidates"][0]["formatted_address"]
+            geoloc = result["candidates"][0]["geometry"]["location"]
+            name = result["candidates"][0]["name"]
+            return address, geoloc, name
+        else:
+            return None
 
     def construct_static_map_url(self, geoloc):
         payload = {
@@ -112,7 +116,11 @@ size={size}&markers={markers}&key={key}".format(**payload)
         return selected_intro
 
     def main(self):
-        address, geoloc, name = self.get_address()
-        static_map_url = self.construct_static_map_url(geoloc)
-        story = self._select_intro(self._request_wikipedia(geoloc))
-        return address, static_map_url, name, story
+        found_address = self.get_address()
+        if found_address:
+            address, geoloc, name = found_address
+            static_map_url = self.construct_static_map_url(geoloc)
+            story = self._select_intro(self._request_wikipedia(geoloc))
+            return address, static_map_url, name, story
+        else:
+            return None
