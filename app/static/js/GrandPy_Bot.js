@@ -9,8 +9,9 @@ $(function() {
 				if (this.status == 200) {
 					var result = JSON.parse(this.responseText);
 					var dialog_box = $("#dialog_box")
-					var answer = "<p>"+result.address+"</p><p><img src='"+result.static_map_url+"' alt='carte du lieu'></p><p>"+result.story+"</p>";
-					dialog_box.append(answer);
+					$("<p></p>").text(result.address).appendTo(dialog_box)
+					$("<p></p>").html($("<img>", {src: result.static_map_url, alt: "carte du lieu"})).appendTo(dialog_box)
+					$("<p></p>").text(result.story).appendTo(dialog_box)
 					dialog_box.scrollTop(dialog_box[0].scrollHeight);
 				}
 			}
