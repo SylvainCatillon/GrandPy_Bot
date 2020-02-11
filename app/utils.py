@@ -18,7 +18,7 @@ class Parser:
         assert type(sentence) == str
         wrong_letters = []
         for letter in sentence:
-            if letter not in ["-"] and not letter.isalnum():
+            if letter not in wrong_letters+["-"] and not letter.isalnum():
                 wrong_letters.append(letter)
         for letter in wrong_letters:
             sentence = sentence.replace(letter, " "+letter+" ")
