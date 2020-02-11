@@ -16,14 +16,14 @@ def getResponse():
     api_getter = ApiGetter(instance_config.GOOGLE_API_KEY, parsed_message)
     found_address = api_getter.main()
     if found_address:
-        address, static_map_url, name, story = found_address
+        address, static_map_url, name, story, story_title = found_address
         grandpy_sentence = "Comment?! {name}? Ahhhh, oui, je me souviens de cette adresse! c'est: {address}"
-        grandpy_story = "Mais t'ai-je déjà raconté l'histoire de ce quartier qui m'a vu en culottes courtes ? Par exemple: "
+        grandpy_story = "Mais t'ai-je déjà raconté l'histoire de ce quartier qui m'a vu en culottes courtes ? {story_title}: {story}"
         return {
             "status": "OK",
             "address":  grandpy_sentence.format(name=name, address=address),
             "static_map_url": static_map_url,
-            "story": grandpy_story+story}
+            "story": grandpy_story.format(story=story, story_title=story_title)}
     else:
         return {
             "status": "address_not_found",

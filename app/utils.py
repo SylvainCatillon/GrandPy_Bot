@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 
 from .stopwords_fr import stopwords_list
 
@@ -84,43 +85,90 @@ class ApiGetter:
         return "https://maps.googleapis.com/maps/api/staticmap?zoom={zoom}&\
 size={size}&markers={markers}&key={key}".format(**payload)
 
+#    def _request_wikipedia(self, geoloc):
+#        payload = {
+#        "action": "query",
+#        "generator": "geosearch",
+#        "ggscoord": "{lat}|{lng}".format(**geoloc),
+#        "ggsradius": 500,
+#        "ggslimit": 20,
+#        "format": "json",
+#        "prop": "extracts",
+#        "exsentences": 4,
+#        "explaintext": 1,
+#        "exintro": 1
+#        }
+#        raw_result = requests.get(
+#            "https://fr.wikipedia.org/w/api.php",
+#            params=payload)
+#        intros = []
+#        for page in raw_result.json()["query"]["pages"].values():
+#            intros.append(page["extract"])
+#        return intros
+
     def _request_wikipedia(self, geoloc):
         payload = {
-        "action": "query",
-        "generator": "geosearch",
-        "ggscoord": "{lat}|{lng}".format(**geoloc),
-        "ggsradius": 500,
-        "ggslimit": 20,
-        "format": "json",
-        "prop": "extracts",
-        "exsentences": 4,
-        "explaintext": 1,
-        "exintro": 1
-        }
+            "action": "query",
+            "list": "geosearch",
+            "gscoord": "{lat}|{lng}".format(**geoloc),
+            "gsradius": 500,
+            "gslimit": 20,
+            "format": "json"
+            }
         raw_result = requests.get(
             "https://fr.wikipedia.org/w/api.php",
             params=payload)
-        intros = []
-        for page in raw_result.json()["query"]["pages"].values():
-            intros.append(page["extract"])
-        return intros
+        return raw_result.json()["query"]["geosearch"]
 
-    def _select_intro(self, intros):
-        max_len = 0
-        selected_intro = None
-        for intro in intros:
-            intro_len = len(intro)
-            if intro_len > max_len:
-                selected_intro = intro
-                max_len = intro_len
-        return selected_intro
+#    def _select_intro(self, intros):
+#        max_len = 0
+#        selected_intro = None
+#        for intro in intros:
+#            intro_len = len(intro)
+#            if intro_len > max_len:
+#                selected_intro = intro
+#                max_len = intro_len
+#        return selected_intro
+
+    def select_pageid(self, pages, name):
+        pageid = pages[0]["pageid"]
+        for page in pages:
+            if page["title"] == name:
+                pageid = page["pageid"]
+                break
+        return pageid
+
+
+    def get_section_text(self, pageid):
+        payload = {
+            "action": "parse",
+            "pageid": pageid,
+            "format": "json",
+            "formatversion": 2,
+            "prop": "text",
+            "section": 1
+            }
+        raw_result = requests.get(
+            "https://fr.wikipedia.org/w/api.php",
+            params=payload)
+        result = raw_result.json()
+        html_text = result['parse']['text']
+        section_text = BeautifulSoup(html_text).p.get_text()
+        title = result['parse']['title']
+        return section_text, title
+
+    def get_story(self, geoloc, name):
+        pages = self._request_wikipedia(geoloc)
+        pageid = self.select_pageid(pages, name)
+        story, title = self.get_section_text(pageid)
+        return story, title
 
     def main(self):
         found_address = self.get_address()
         if found_address:
             address, geoloc, name = found_address
             static_map_url = self.construct_static_map_url(geoloc)
-            story = self._select_intro(self._request_wikipedia(geoloc))
-            return address, static_map_url, name, story
+            story, story_title = self.get_story(geoloc, name)
+            return address, static_map_url, name, story, story_title
         else:
             return None
