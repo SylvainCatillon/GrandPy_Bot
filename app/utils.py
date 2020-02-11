@@ -16,22 +16,22 @@ class Parser:
             sentence = sentence.replace(letter, " "+letter+" ")
         return sentence.lower().split()
 
-    def _find_word(self, words_list, search_list, start=0):
-        matches = []
-        for word in search_list:
-            if word in words_list[start:]:
-                matches.append(words_list.index(word, start))
-        if not matches:
-            return None
-        return sorted(matches)[0]
-
 #    def _find_word(self, words_list, search_list, start=0):
-#        match = None
-#        for index, word in enumerate(words_list[start:]):
-#            if word in search_list:
-#                match = index
-#                break
-#        return match
+#        matches = []
+#        for word in search_list:
+#            if word in words_list[start:]:
+#                matches.append(words_list.index(word, start))
+#        if not matches:
+#            return None
+#        return sorted(matches)[0]
+
+    def _find_word(self, words_list, search_list, start=0):
+        match = None
+        for index, word in enumerate(words_list[start:]):
+            if word in search_list:
+                match = index+start
+                break
+        return match
 
 
     def parse_by_key_word(self, words_list):
@@ -163,7 +163,7 @@ size={size}&markers={markers}&key={key}".format(**payload)
             params=payload)
         result = raw_result.json()
         html_text = result['parse']['text']
-        section_text = re.sub("\[.*]", "", BeautifulSoup(html_text, "html.parser").p.get_text())
+        section_text = re.sub("\\[.*]", "", BeautifulSoup(html_text, "html.parser").p.get_text())
         title = result['parse']['title']
         return section_text, title
 
