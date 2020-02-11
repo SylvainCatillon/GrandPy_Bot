@@ -1,12 +1,12 @@
 $(function() {
-	var loading = $("<p></p>").html($("<img>", {src: "../static/images/loading.gif", alt: "loading..."}))
+	var loading = $("<div></div>", {"class": "spinner-border text-info"})
 
 	$("#user_form").on("submit", function(event) {
 		var user_message = $("#user_message").val();
 		event.preventDefault();
 		event.stopPropagation();
 		var dialog_box = $("#dialog_box");
-		$("<p></p>").text(user_message).appendTo(dialog_box);
+		$("<p></p>", {"class": "alert alert-info mx-3 rounded shadow-lg", text: user_message}).appendTo(dialog_box);
 		var request = new XMLHttpRequest();
 		request.onreadystatechange = function() {
 			if (this.readyState == XMLHttpRequest.DONE) {
@@ -14,12 +14,12 @@ $(function() {
 				if (this.status == 200) {
 					var result = JSON.parse(this.responseText);
 					if (result.status == "OK") {
-						$("<p></p>").text(result.address).appendTo(dialog_box)
-						$("<p></p>").html($("<img>", {src: result.static_map_url, alt: "carte du lieu"})).appendTo(dialog_box)
-						$("<p></p>").text(result.story).appendTo(dialog_box)
+						$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.address}).appendTo(dialog_box)
+						$("<img>", {"class": "d-block my-3 mx-auto", src: result.static_map_url, alt: "carte du lieu"}).appendTo(dialog_box)
+						$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.story}).appendTo(dialog_box)
 						dialog_box.scrollTop(dialog_box[0].scrollHeight);
 					} else if (result.status == "address_not_found") {
-						$("<p></p>").text(result.message).appendTo(dialog_box)
+						$("<p></p>", {"class": "alert alert-warning mx-3 rounded shadow-lg", text: result.message}).appendTo(dialog_box)
 					}
 				} // else throw error?
 			} else {
