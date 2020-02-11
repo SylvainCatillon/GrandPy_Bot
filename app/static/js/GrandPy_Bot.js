@@ -1,5 +1,5 @@
 $(function() {
-	var loading = $("<div></div>", {"class": "spinner-border text-info"})
+	var loading = $('<div class="d-flex justify-content-center"><div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div></div>')
 
 	$("#user_form").on("submit", function(event) {
 		var user_message = $("#user_message").val();
@@ -21,7 +21,10 @@ $(function() {
 					} else if (result.status == "address_not_found") {
 						$("<p></p>", {"class": "alert alert-warning mx-3 rounded shadow-lg", text: result.message}).appendTo(dialog_box)
 					}
-				} // else throw error?
+				} else {
+					// attention, message dans js, à eviter
+					$("<p></p>", {"class": "alert alert-danger mx-3 rounded shadow-lg", text: "Houla, je crois que ma connexion ne marche pas bien.. Ca doit etre l'age!!"}).appendTo(dialog_box)
+				}
 			} else {
 				dialog_box.append(loading);
 				dialog_box.scrollTop(dialog_box[0].scrollHeight);

@@ -1,18 +1,10 @@
 import requests
+import re
 from bs4 import BeautifulSoup
 
 from .stopwords_fr import stopwords_list
 
 class Parser:
-
-    def _find_word(self, words_list, search_list, start=0):
-        matches = []
-        for word in search_list:
-            if word in words_list[start:]:
-                matches.append(words_list.index(word, start))
-        if not matches:
-            return None
-        return sorted(matches)[0]
 
     def split_in_words(self, sentence):
         assert type(sentence) == str
@@ -24,10 +16,28 @@ class Parser:
             sentence = sentence.replace(letter, " "+letter+" ")
         return sentence.lower().split()
 
+    def _find_word(self, words_list, search_list, start=0):
+        matches = []
+        for word in search_list:
+            if word in words_list[start:]:
+                matches.append(words_list.index(word, start))
+        if not matches:
+            return None
+        return sorted(matches)[0]
+
+#    def _find_word(self, words_list, search_list, start=0):
+#        match = None
+#        for index, word in enumerate(words_list[start:]):
+#            if word in search_list:
+#                match = index
+#                break
+#        return match
+
+
     def parse_by_key_word(self, words_list):
         start = self._find_word(words_list, ["adresse", "où", "l'adresse"]) # place this list in a config file?
         if start:
-            stop = self._find_word(words_list, ["?", ".", ",", "!", ";"], start=start) # place this list in a config file?
+            stop = self._find_word(words_list, ["?", ".", "!", ";"], start=start) # place this list in a config file?
             if not stop:
                 stop = len(words_list)+1
             return words_list[start+1:stop]
@@ -36,7 +46,7 @@ class Parser:
     def parse_by_filter(self, words_list):
         parsed_list = []
         for word in words_list:
-            if word.isalnum() and word not in stopwords_list+["grandpy", "bot"]:
+            if word.isalnum() and word not in stopwords_list+["grandpy", "bot", "grandpybot"]:
                 parsed_list.append(word)
         return parsed_list
 
@@ -51,7 +61,7 @@ class ApiGetter:
 
     def __init__(self, google_key, words_list):
         self.google_key = google_key
-        self.words_list = words_list
+        self.words_list = words_list  #  passer cet ag plutot à ApiGetter.main()?
 
     def _request_address(self, query):
         payload = {
@@ -74,7 +84,7 @@ class ApiGetter:
             name = result["candidates"][0]["name"]
             return address, geoloc, name
         else:
-            return None
+            return None # return status?
 
     def construct_static_map_url(self, geoloc):
         payload = {
@@ -153,7 +163,7 @@ size={size}&markers={markers}&key={key}".format(**payload)
             params=payload)
         result = raw_result.json()
         html_text = result['parse']['text']
-        section_text = BeautifulSoup(html_text).p.get_text()
+        section_text = re.sub("\[.*]", "", BeautifulSoup(html_text, "html.parser").p.get_text())
         title = result['parse']['title']
         return section_text, title
 
@@ -165,10 +175,11 @@ size={size}&markers={markers}&key={key}".format(**payload)
 
     def main(self):
         found_address = self.get_address()
+        result = {}
         if found_address:
-            address, geoloc, name = found_address
-            static_map_url = self.construct_static_map_url(geoloc)
-            story, story_title = self.get_story(geoloc, name)
-            return address, static_map_url, name, story, story_title
+            result["address"], geoloc, result["name"] = found_address
+            result["static_map_url"] = self.construct_static_map_url(geoloc)
+            result["story"], result["story_title"] = self.get_story(geoloc, result["name"])
+            return result
         else:
             return None
