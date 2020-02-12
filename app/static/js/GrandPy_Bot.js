@@ -15,10 +15,13 @@ $(function() {
 					var result = JSON.parse(this.responseText);
 					if (result.status == "OK") {
 						$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.address}).appendTo(dialog_box)
-						$("<img>", {"class": "d-block my-3 mx-auto", src: result.static_map_url, alt: "carte du lieu"}).appendTo(dialog_box)
+						var map = $("<img>", {"class": "d-block my-3 mx-auto", id: "map", src: result.static_map_url, alt: "carte du lieu"})
+						map.on("load", function() {
+							dialog_box.scrollTop(dialog_box[0].scrollHeight);
+							})
+						map.appendTo(dialog_box)
 						//attention texte dans js, à eviter!!
-						$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.story}).append($("<a></a>", {href: result.story_url, text: "En savoir plus sur Wikipedia"})).appendTo(dialog_box)
-						dialog_box.scrollTop(dialog_box[0].scrollHeight);
+						$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.story}).append($("<a></a>", {href: result.story_url, text: result.story_link_text})).appendTo(dialog_box)
 					} else if (result.status == "address_not_found") {
 						$("<p></p>", {"class": "alert alert-warning mx-3 rounded shadow-lg", text: result.message}).appendTo(dialog_box)
 					}
@@ -28,8 +31,7 @@ $(function() {
 				}
 			} else {
 				dialog_box.append(loading);
-				dialog_box.scrollTop(dialog_box[0].scrollHeight);
-			}
+			} dialog_box.scrollTop(dialog_box[0].scrollHeight);
 		}
 		var url = window.location.href + "getResponse?user_message=" + user_message;
 		request.open("GET", url);

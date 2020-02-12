@@ -176,11 +176,23 @@ size={size}&markers={markers}&key={key}".format(**payload)
 
     def main(self):
         found_address = self.get_address()
-        result = {}
         if found_address:
-            result["address"], geoloc, result["name"] = found_address
-            result["static_map_url"] = self.construct_static_map_url(geoloc)
-            result["story"], result["story_title"], result["story_url"] = self.get_story(geoloc, result["name"])
-            return result
+            address, geoloc, name = found_address
+            static_map_url = self.construct_static_map_url(geoloc)
+            story, story_title, story_url = self.get_story(geoloc, name)
+            #  Mettre les phrases dans fichier de config
+            address_text = "Comment?! {name}? Ahhhh, oui, je me souviens de cette adresse! c'est: {address}"
+            story_text = "Mais t'ai-je déjà raconté l'histoire de ce quartier qui m'a vu en culottes courtes ? {story_title}: {story}"
+            story_link_text = "En savoir plus sur Wikipedia"
+            return {
+                "status": "OK",
+                "address":  address_text.format(name=name, address=address),
+                "static_map_url": static_map_url,
+                "story": story_text.format(
+                    story=story, story_title=story_title),
+                "story_url": story_url,
+                "story_link_text": story_link_text}
         else:
-            return None
+            return {
+                "status": "address_not_found",
+                "message": "Désolé mon p'tit, je me souviens plus où c'est..."}
