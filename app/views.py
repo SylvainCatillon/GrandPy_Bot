@@ -9,8 +9,8 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/getResponse")
-def getResponse():
+@app.route("/get_response")
+def get_response():
     user_message = request.args.get("user_message")
     parsed_message = Parser().parse(user_message)
     # Changer API key!
