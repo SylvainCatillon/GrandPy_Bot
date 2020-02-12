@@ -34,7 +34,7 @@ $(function() {
 					dialog_box.append(loading);
 				} dialog_box.scrollTop(dialog_box[0].scrollHeight);
 			}
-			var url = window.location.href + "get_response?user_message=" + user_message;
+			var url = window.location.origin + "/get_response?user_message=" + user_message;
 			request.open("GET", url);
 			request.send();
 			$('#user_form').trigger("reset");
