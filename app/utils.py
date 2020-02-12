@@ -171,7 +171,8 @@ size={size}&markers={markers}&key={key}".format(**payload)
         pages = self._request_wikipedia(geoloc)
         pageid = self.select_pageid(pages, name)
         story, title = self.get_section_text(pageid)
-        return story, title
+        url = "https://fr.wikipedia.org/?curid={}".format(pageid)
+        return story, title, url
 
     def main(self):
         found_address = self.get_address()
@@ -179,7 +180,7 @@ size={size}&markers={markers}&key={key}".format(**payload)
         if found_address:
             result["address"], geoloc, result["name"] = found_address
             result["static_map_url"] = self.construct_static_map_url(geoloc)
-            result["story"], result["story_title"] = self.get_story(geoloc, result["name"])
+            result["story"], result["story_title"], result["story_url"] = self.get_story(geoloc, result["name"])
             return result
         else:
             return None
