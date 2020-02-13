@@ -16,7 +16,7 @@ $(function() {
 						var result = JSON.parse(this.responseText);
 						if (result.status == "OK") {
 							$("<p></p>", {"class": "alert alert-success mx-3 rounded shadow-lg", text: result.address}).appendTo(dialog_box)
-							var map = $("<img>", {"class": "d-block my-3 mx-auto", id: "map", src: result.static_map_url, alt: "carte du lieu"})
+							var map = $("<iframe></iframe>", {"class": "mx-auto my-3 d-block", id: "map", frameborder: 0, style: "border: 0; width: 95%; height: 45%;", allowfullscreen: 1, src: result.map_url, text: "carte du lieu"})
 							map.on("load", function() {
 								dialog_box.scrollTop(dialog_box[0].scrollHeight);
 								})

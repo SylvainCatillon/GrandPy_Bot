@@ -95,6 +95,12 @@ class ApiGetter:
         return "https://maps.googleapis.com/maps/api/staticmap?zoom={zoom}&\
 size={size}&markers={markers}&key={key}".format(**payload)
 
+    def construct_embed_map_url(self, geoloc):
+        payload = {
+            "q": "{lat},{lng}".format(**geoloc),
+            "key": self.google_key}
+        return "https://www.google.com/maps/embed/v1/place?q={q}&key={key}".format(**payload)
+
 #    def _request_wikipedia(self, geoloc):
 #        payload = {
 #        "action": "query",
@@ -178,7 +184,10 @@ size={size}&markers={markers}&key={key}".format(**payload)
         found_address = self.get_address()
         if found_address:
             address, geoloc, name = found_address
-            static_map_url = self.construct_static_map_url(geoloc)
+            # if config.map == "static":
+            #       map_url = self.construct_static_map_url(geoloc)
+            # elif config.map == "embed":
+            map_url = self.construct_embed_map_url(geoloc)
             story, story_title, story_url = self.get_story(geoloc, name)
             #  Mettre les phrases dans fichier de config
             address_text = "Comment?! {name}? Ahhhh, oui, je me souviens de cette adresse! c'est: {address}"
@@ -187,7 +196,7 @@ size={size}&markers={markers}&key={key}".format(**payload)
             return {
                 "status": "OK",
                 "address":  address_text.format(name=name, address=address),
-                "static_map_url": static_map_url,
+                "map_url": map_url,
                 "story": story_text.format(
                     story=story, story_title=story_title),
                 "story_url": story_url,
