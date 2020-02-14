@@ -1,7 +1,5 @@
 import config
 
-from app.stopwords_fr import stopwords_list
-
 class Parser:
     """This class parse a string to get
     a list of words ready to request an address"""
@@ -9,7 +7,7 @@ class Parser:
     def split_in_words(self, sentence):
         """Takes a string as 'sentence'.
         Returns a list of lowered words"""
-        assert type(sentence) == str
+        assert isinstance(sentence, str)
         wrong_letters = []
         for letter in sentence:
             if letter not in wrong_letters+["-"] and not letter.isalnum():

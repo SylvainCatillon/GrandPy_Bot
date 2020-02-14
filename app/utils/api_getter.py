@@ -1,5 +1,5 @@
-import requests
 import re
+import requests
 
 from bs4 import BeautifulSoup
 
@@ -118,9 +118,9 @@ q={q}&key={key}".format(**payload)
     def address_not_found(self):
         """Return a result to send if the address wasn't found"""
         return {
-                "status": "ADDRESS_NOT_FOUND",
-                "message": config.TEXT["address_not_found"]
-            }
+            "status": "ADDRESS_NOT_FOUND",
+            "message": config.TEXT["address_not_found"]
+        }
 
     def construct_fail_result(self, response):
         """Return a result to send if the Google request failed"""
@@ -146,5 +146,4 @@ q={q}&key={key}".format(**payload)
             return self.construct_result(response["candidates"][0])
         elif response["status"] == "ZERO_RESULTS":
             return self.address_not_found()
-        else:
-            return self.construct_fail_result(response)
+        return self.construct_fail_result(response)

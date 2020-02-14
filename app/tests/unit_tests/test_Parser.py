@@ -1,6 +1,6 @@
 import pytest
 
-from app.utils import Parser as script
+from app.utils import parser as script
 
 class TestParser:
     def setup_method(self):

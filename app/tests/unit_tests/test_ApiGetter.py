@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from app.utils import ApiGetter as script
+from app.utils import api_getter as script
 from instance import config as instance_config
 
 
