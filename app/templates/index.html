@@ -14,36 +14,41 @@
   </head>
   <body style="background-image: url({{url_for('static', filename='images/background.jpg')}}); background-size: cover;">
     <div id="main_wrapper">
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-light bg-white">
-            	<span class="navbar-brand" style="text-align: center;">
-            		<img class="d-inline" src="{{url_for('static', filename='images/logo.jpg')}}" alt="logo" width="10%" height="10%">
-                
-                <span class="navbar-text h2 text-success font-weight-light ml-3"><span class="d-none d-md-inline">Bonjour mon p'tit! Tu cherches ton chemin? Je suis </span>GrandPy Bot</span></span>
-            </nav>
-        </header>
-        <div class="container mb-5" style="background-color: rgba(220,220,220,0.7);">
-        	<section class="row">
-        		<div class="col">
-                    <form id="user_form">
-                      <div class="form-group my-4 h5">
-                        <label for="userMessage">Tu cherches une adresse? Demande moi!</label>
-                        <input type="text" class="form-control" id="user_message" placeholder="Salut GrandPy ! Est-ce que tu connais l'adresse d'OpenClassrooms ?">
-                      </div>
-                    </form>
-        			<div class="my-3 border border-info rounded" id="dialog_box" style="height: 500px; background-color: rgba(148, 165, 181, 0.5); overflow: auto;"></div>
-        		</div>
-        	</section>
-            <a href="https://www.freepik.com/free-photos-vectors/background" class="text-muted">Background photo created by freepik - www.freepik.com</a>
-        </div>
-    	<footer class="page-footer font-small bg-success fixed-bottom">
-            <div class="container">
-        		<span class="footer-copyright text-center">© 2020 Copyright: Sylvain Catillon
-        			<a href="https://github.com/SylvainCatillon/GrandPy_Bot" class="badge badge-secondary" target="_blank">GitHub</a>
-        			<a href="https://www.linkedin.com/in/sylvain-catillon-01691b188" class="badge badge-info" target="_blank">LinkedIn</a>
-                </span>
-    		</div>
-    	</footer>
+      <header>
+          <nav class="navbar navbar-expand-sm navbar-light bg-white">
+            <span class="navbar-brand" style="text-align: center;">
+              <img class="d-inline" src="{{url_for('static', filename='images/logo.jpg')}}" alt="logo" width="10%" height="10%">
+                <span class="navbar-text h2 text-success font-weight-light ml-3">
+                  <!-- Header texte for computers-->
+                  <span class="d-none d-lg-inline">{{config.TEXT["long_header"]}}</span>
+                  <!-- Header texte for smartphone and tablets-->
+                  <span class="d-inline d-lg-none">{{config.TEXT["short_header"]}}</span>
+           </span>
+                 </span>
+          </nav>
+      </header>
+      <div class="container mb-5" style="background-color: rgba(220,220,220,0.7);">
+        <section class="row">
+          <div class="col">
+            <form id="user_form">
+              <div class="form-group my-4 h5">
+                <label for="userMessage">{{config.TEXT["form_label"]}}</label>
+                <input type="text" class="form-control" id="user_message" placeholder="{{config.TEXT['form_placeholder']}}">
+              </div>
+            </form>
+              <div class="my-3 border border-info rounded" id="dialog_box" style="height: 500px; background-color: rgba(148, 165, 181, 0.5); overflow: auto;"></div>
+              </div>
+        </section>
+        <a href="https://www.freepik.com/free-photos-vectors/background" class="text-muted">Background photo created by freepik - www.freepik.com</a>
+      </div>
+      <footer class="page-footer font-small bg-success fixed-bottom">
+        <div class="container">
+          <span class="footer-copyright text-center">© 2020 Copyright: Sylvain Catillon
+            <a href="https://github.com/SylvainCatillon/GrandPy_Bot" class="badge badge-secondary" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/sylvain-catillon-01691b188" class="badge badge-info" target="_blank">LinkedIn</a>
+          </span>
+	  	</div>
+      </footer>
     </div>
 
     <!-- Optional JavaScript -->
