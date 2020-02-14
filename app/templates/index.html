@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link rel="shortcut icon" type="image/png" href="../static/images/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static', filename='images/favicon.png')}}"/>
 
     <title>GrandPy Bot</title>
   </head>
@@ -17,7 +17,7 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-light bg-white">
             	<span class="navbar-brand" style="text-align: center;">
-            		<img class="d-inline" src="..\static\images\logo.jpg" alt="logo" width="10%" height="10%">
+            		<img class="d-inline" src="{{url_for('static', filename='images/logo.jpg')}}" alt="logo" width="10%" height="10%">
                 
                 <span class="navbar-text h2 text-success font-weight-light ml-3"><span class="d-none d-md-inline">Bonjour mon p'tit! Tu cherches ton chemin? Je suis </span>GrandPy Bot</span></span>
             </nav>
@@ -34,7 +34,7 @@
         			<div class="my-3 border border-info rounded" id="dialog_box" style="height: 500px; background-color: rgba(148, 165, 181, 0.5); overflow: auto;"></div>
         		</div>
         	</section>
-            <a href="https://www.freepik.com/free-photos-vectors/background" class="text-dark">Background photo created by freepik - www.freepik.com</a>
+            <a href="https://www.freepik.com/free-photos-vectors/background" class="text-muted">Background photo created by freepik - www.freepik.com</a>
         </div>
     	<footer class="page-footer font-small bg-success fixed-bottom">
             <div class="container">
@@ -53,6 +53,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <!-- Javascript functions -->
-    <script src="../static/js/GrandPy_Bot.js"></script>
+    <script src="{{url_for('static', filename='js/GrandPy_Bot.js')}}"></script>
   </body>
 </html>

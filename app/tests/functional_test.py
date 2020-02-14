@@ -29,4 +29,3 @@ def test_get_response(test_client):
     assert "story" in r
     assert "address" in r
     assert "tour eiffel" in r["address"].lower()
-

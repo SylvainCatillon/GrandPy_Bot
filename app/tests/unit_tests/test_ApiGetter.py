@@ -1,8 +1,8 @@
-from .. import utils as script
-from instance import config as instance_config
-
 import pytest
 import requests
+
+from app.utils import ApiGetter as script
+from instance import config as instance_config
 
 
 class MockResponse:
@@ -43,31 +43,6 @@ def mock_response(monkeypatch):
 
     monkeypatch.setattr(requests, "get", mock_get)
 
-class TestParser:
-    def setup_method(self):
-        self.parser = script.Parser()
-        self.sentence = "Salut GrandPy ! Est-ce que tu connais l'adresse d'OpenClassrooms ?"
-
-    def test_not_a_string(self):
-        with pytest.raises(AssertionError):
-            self.parser.parse(25)
-        
-    def test_split_in_words(self):
-        parsed = self.parser.split_in_words(self.sentence)
-        assert parsed == ["salut", "grandpy", "!", "est-ce", "que", "tu",
-        "connais", "l", "'", "adresse", "d", "'", "openclassrooms", "?"]
-
-    def test_remove_stopwords(self):
-        parsed = self.parser.parse(self.sentence)
-        assert parsed == ["d", "'", "openclassrooms"]
-
-    def test_sentences(self):
-        p = self.parser.parse
-        print(p("J'aimerais bien aller à la tour eiffel"))
-        print(p("dis grandpy, c'est où la tour eiffel"))
-        print(p("j'ai déjà cherché, mais j'arrive pas à trouver la tour eiffel..."))
-        print(p("dis granpy, tu connais l'adresse d'openclassrooms, histoire que j'y fasse un tour?"))
-
 class TestApiGetter:
     def setup_method(self):
         self.words_list = ["d", "'", "openclassrooms"]
@@ -86,9 +61,8 @@ class TestApiGetter:
         assert geoloc["lat"] == 48.8748465
         assert geoloc["lng"] == 2.3504873
 
-    def test_construct_static_map_url(self):
-        geoloc = {"lat" : 48.8748465, "lng" : 2.3504873}
-        test_url = "https://maps.googleapis.com/maps/api/staticmap?zoom=15&\
-size=300x150&markers=48.8748465,2.3504873&\
-key={}".format(instance_config.GOOGLE_API_KEY)
-        assert self.api_getter.construct_static_map_url(geoloc) == test_url
+    def test_main(self):
+      result = self.api_getter.main()
+      for key in ["status","address", "map_url", "story"]:
+        assert key in result
+      assert result["status"] == "OK"

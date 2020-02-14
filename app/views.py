@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
 
 from instance import config as instance_config
-from .utils import Parser, ApiGetter
+from .utils.Parser import Parser
+from .utils.ApiGetter import ApiGetter
 
 app = Flask(__name__)
 
