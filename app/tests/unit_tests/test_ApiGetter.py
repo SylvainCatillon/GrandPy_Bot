@@ -76,7 +76,6 @@ def mock_response(monkeypatch):
 
 class TestApiGetter:
     def setup_method(self):
-        self.words_list = ["d", "'", "openclassrooms"]
         self.api_getter = script.ApiGetter()
 
     def test_get_maps_response(self, mock_response):
@@ -84,24 +83,19 @@ class TestApiGetter:
         assert result == MockMapsResponse.json()
 
     def test_get_address(self, mock_response):
-        address = self.api_getter.get_address(self.words_list)[0]
-        assert address == "7 Cité Paradis, 75010 Paris, France"
-
-    def test_get_geoloc(self, mock_response):
-        geoloc = self.api_getter.get_address(self.words_list)[1]
-        assert geoloc["lat"] == 48.8748465
-        assert geoloc["lng"] == 2.3504873
+        result = self.api_getter.main(["fake", "querry"])
+        assert "7 Cité Paradis, 75010 Paris, France" in result["address"]
 
     def test_get_story(self, mock_response):
-        result = self.api_getter.get_address(self.words_list)
-        geoloc = result[1]
-        name = result[2]
-        story = self.api_getter.get_story(geoloc, name)
-        assert len(story) == 3
-        assert story[1] == "H\u00f4tel Bourrienne"
+        result = self.api_getter.main(["fake", "querry"])
+        assert "Justine Segard" in result["story"]
 
-    def test_main(self):
-        result = self.api_getter.main(self.words_list)
+    def test_main(self, mock_response):
+        result = self.api_getter.main(["fake", "querry"])
         for key in ["status","address", "map_url", "story"]:
           assert key in result
         assert result["status"] == "OK"
+
+    def test_address_not_found(self):
+      result = self.api_getter.main(["qwertyuiopasdfghjklm"])
+      assert result["status"] == "ADDRESS_NOT_FOUND"

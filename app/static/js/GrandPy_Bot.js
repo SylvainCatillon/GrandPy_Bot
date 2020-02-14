@@ -41,19 +41,17 @@ $(function() {
 						text: result.story_link_text
 					})).appendTo(dialog_box);
 
-				} else if (result.status == "address_not_found") {
+				} else if (result.status == "ADDRESS_NOT_FOUND") {
 					$("<p></p>", {
 						"class": "alert alert-warning mx-3 rounded shadow-lg",
 						text: result.message
 					}).appendTo(dialog_box);
-				}
-			} else {
-				// attention, message dans js, à eviter
-				$("<p></p>", {
-					"class": "alert alert-danger mx-3 rounded shadow-lg",
-					text: "Houla, je crois que ma connexion ne marche pas\
-					 bien.. Ca doit etre l'age!!"
-				}).appendTo(dialog_box);
+				} else {
+					$("<p></p>", {
+						"class": "alert alert-danger mx-3 rounded shadow-lg",
+						text: result.message
+					}).appendTo(dialog_box);
+				} 
 			}
 		} else {
 			dialog_box.append(loading);
