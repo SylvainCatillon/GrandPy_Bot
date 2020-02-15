@@ -17,3 +17,5 @@ pytest == 5.3.5
 # app\tests\unit_tests\test_api_getter.py: 2
 # app\utils\api_getter.py: 2
 requests == 2.22.0
+
+gunicorn == 20.0.4
