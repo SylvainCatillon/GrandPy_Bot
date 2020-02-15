@@ -95,7 +95,7 @@ class TestApiGetter:
     def test_get_maps_response(self, mock_response):
         """Assures that ApiGetter.request_address get
         a response from Google Maps API"""
-        result = self.api_getter.request_address("fake query")
+        result = self.api_getter._request_address("fake query")
         assert result == MockMapsResponse.json()
 
     def test_get_address(self, mock_response):

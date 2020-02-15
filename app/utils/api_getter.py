@@ -12,7 +12,7 @@ class ApiGetter:
     def __init__(self):
         self.google_key = config.GOOGLE_API_KEY
 
-    def request_address(self, query):
+    def _request_address(self, query):
         """Takes a string arg as 'query'.
         Requests Google Place API and return the result in Json format"""
         payload = {
@@ -26,7 +26,7 @@ findplacefromtext/json",
             params=payload)
         return raw_result.json()
 
-    def get_embed_map_url(self, geoloc):
+    def _get_embed_map_url(self, geoloc):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'.
         Returns an URL to an embeb google map"""
         payload = {
@@ -35,7 +35,8 @@ findplacefromtext/json",
         return "https://www.google.com/maps/embed/v1/place?\
 q={q}&key={key}".format(**payload)
 
-    def request_wikipedia(self, geoloc):
+    @staticmethod
+    def _request_wikipedia(geoloc):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'.
         Requests Wikipedia API and return the result in Json format"""
         payload = {
@@ -51,7 +52,8 @@ q={q}&key={key}".format(**payload)
             params=payload)
         return raw_result.json()["query"]["geosearch"]
 
-    def select_pageid(self, pages, name):
+    @staticmethod
+    def _select_pageid(pages, name):
         """Takes a list of dict as 'pages' and a string as 'name'.
         Checks if a page has the arg 'name' as title, and return its ID.
         If there is no match, returns the ID of the first page"""
@@ -60,7 +62,8 @@ q={q}&key={key}".format(**payload)
                 return page["pageid"]
         return pages[0]["pageid"]
 
-    def get_section_text(self, pageid):
+    @staticmethod
+    def _get_section_text(pageid):
         """Takes an int arg 'pageid'.
         Requests the Wikipedia Parse API to get the content of the first
         section of the 'pageid' page, in html format.
@@ -85,25 +88,25 @@ q={q}&key={key}".format(**payload)
         title = result['parse']['title']
         return parsed_text, title
 
-    def get_story(self, geoloc, name):
+    def _get_story(self, geoloc, name):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'
         and a string as 'name'.
         Launches the methods to get a story from a Wikipedia page.
         Returns the story, the page title and the page URL"""
-        pages = self.request_wikipedia(geoloc)
-        pageid = self.select_pageid(pages, name)
-        story, title = self.get_section_text(pageid)
+        pages = self._request_wikipedia(geoloc)
+        pageid = self._select_pageid(pages, name)
+        story, title = self._get_section_text(pageid)
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
         return story, title, url
 
-    def construct_result(self, result):
+    def _construct_result(self, result):
         """Takes a dict as result.
         Lauchn this function if the Google status was 'OK'.
         Return the full result"""
         geoloc = result["geometry"]["location"]
         name = result["name"]
-        map_url = self.get_embed_map_url(geoloc)
-        story, story_title, story_url = self.get_story(geoloc, name)
+        map_url = self._get_embed_map_url(geoloc)
+        story, story_title, story_url = self._get_story(geoloc, name)
         return {
             "status": "OK",
             "address":  config.TEXT["address"].format(
@@ -115,14 +118,16 @@ q={q}&key={key}".format(**payload)
             "story_link_text": config.TEXT["story_link"]
         }
 
-    def address_not_found(self):
+    @staticmethod
+    def _address_not_found():
         """Return a result to send if the address wasn't found"""
         return {
             "status": "ADDRESS_NOT_FOUND",
             "message": config.TEXT["address_not_found"]
         }
 
-    def construct_fail_result(self, response):
+    @staticmethod
+    def _construct_fail_result(response):
         """Return a result to send if the Google request failed"""
         fail_result = {
             "status": "GOOGLE_REQUEST_FAILED",
@@ -139,11 +144,11 @@ q={q}&key={key}".format(**payload)
         Request an address, and lauchnes a method to get a result,
         accorded to the request status"""
         query = " ".join(words_list)
-        response = self.request_address(query)
+        response = self._request_address(query)
         #  Next line is to deal with case sensitivity
         response["status"] = response["status"].upper()
         if response["status"] == "OK":
-            return self.construct_result(response["candidates"][0])
+            return self._construct_result(response["candidates"][0])
         elif response["status"] == "ZERO_RESULTS":
-            return self.address_not_found()
-        return self.construct_fail_result(response)
+            return self._address_not_found()
+        return self._construct_fail_result(response)

@@ -20,7 +20,7 @@ l'adresse d'OpenClassrooms ?"
     def test_split_in_words(self):
         """Assures that Parser.split_in_words()
         splits a sentence in a list of words"""
-        parsed = self.parser.split_in_words(self.sentence)
+        parsed = self.parser._split_in_words(self.sentence)
         assert parsed == [
             "salut", "grandpy", "!", "est-ce", "que", "tu",
             "connais", "l", "'", "adresse", "d", "'", "openclassrooms", "?"

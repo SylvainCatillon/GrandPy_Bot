@@ -4,7 +4,8 @@ class Parser:
     """This class parse a string to get
     a list of words ready to request an address"""
 
-    def split_in_words(self, sentence):
+    @staticmethod
+    def _split_in_words(sentence):
         """Takes a string as 'sentence'.
         Returns a list of lowered words"""
         assert isinstance(sentence, str)
@@ -16,7 +17,8 @@ class Parser:
             sentence = sentence.replace(letter, " "+letter+" ")
         return sentence.lower().split()
 
-    def _find_word(self, words_list, search_list, start=0):
+    @staticmethod
+    def _find_word(words_list, search_list, start=0):
         """Takes a list of words as 'words_list',
         a list of key words as 'search_list'
         and an int as start (default = 0).
@@ -28,7 +30,7 @@ class Parser:
         return None
 
 
-    def parse_by_key_word(self, words_list):
+    def _parse_by_key_word(self, words_list):
         """Takes a list of words as 'words_list'.
         Search for a starting key word in 'words_list.
         Returns the words beetwen the starting key word and the ending key word,
@@ -42,7 +44,8 @@ class Parser:
             return words_list[start+1:stop]
         return []
 
-    def parse_by_filter(self, words_list):
+    @staticmethod
+    def _parse_by_filter(words_list):
         """Takes a list of words as 'words_list'.
         Returns the list without the words in a stopwords list"""
         parsed_list = []
@@ -58,8 +61,8 @@ class Parser:
         Tries to parses the list by key words.
         If this fails, parses the list by stopwords.
         Returns the parsed list"""
-        words_list = self.split_in_words(sentence)
-        parsed_list = self.parse_by_key_word(words_list)
+        words_list = self._split_in_words(sentence)
+        parsed_list = self._parse_by_key_word(words_list)
         if not parsed_list:
-            parsed_list = self.parse_by_filter(words_list)
+            parsed_list = self._parse_by_filter(words_list)
         return parsed_list
