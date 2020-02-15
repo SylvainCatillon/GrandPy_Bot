@@ -1,5 +1,5 @@
 import text
-from app.stopwords_fr import stopwords_list
+from app.stopwords_fr import STOPWORDS_LIST
 
 try:
     from instance import config as instance_config
@@ -16,4 +16,4 @@ TEXT = text.fr_text
 
 START_KEYWORDS = ["adresse", "où", "l'adresse"]
 END_KEYWORDS = ["?", ".", "!", ";"]
-STOPWORDS = stopwords_list+["grandpy", "bot", "grandpybot"]
+STOPWORDS = STOPWORDS_LIST+["grandpy", "bot", "grandpybot"]

@@ -75,7 +75,7 @@ $(function() {
 			request.onreadystatechange = showAnswer;
 			var url =
 				window.location.origin +
-				"/get_response?user_message=" +
+				"/get_answer?user_message=" +
 				user_message;
 
 			request.open("GET", url);
