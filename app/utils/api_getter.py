@@ -20,6 +20,7 @@ class ApiGetter:
             "input": query,
             "inputtype": "textquery",
             "fields": "formatted_address,geometry,name",
+            "language": "fr",
             "key": self.google_key}
         raw_result = requests.get(
             "https://maps.googleapis.com/maps/api/place/"
