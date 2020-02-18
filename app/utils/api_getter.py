@@ -45,7 +45,7 @@ class ApiGetter:
             "action": "query",
             "list": "geosearch",
             "gscoord": "{lat}|{lng}".format(**geoloc),
-            "gsradius": 500,
+            "gsradius": 1000,
             "gslimit": 20,
             "format": "json"
             }
@@ -97,6 +97,11 @@ class ApiGetter:
         Launches the methods to get a story from a Wikipedia page.
         Returns the story, the page title and the page URL"""
         pages = self._request_wikipedia(geoloc)
+        if not pages:
+            return (
+                "...",
+                "Saperlipopette, de quoi est-ce que je parlais déja?",
+                "")
         pageid = self._select_pageid(pages, name)
         story, title = self._get_section_text(pageid)
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
