@@ -33,8 +33,8 @@ class Parser:
     def _parse_by_key_word(self, words_list):
         """Takes a list of words as 'words_list'.
         Search for a starting key word in 'words_list.
-        Returns the words beetwen the starting key word and the ending key word,
-        or an empty list if no match"""
+        Returns the words beetwen the starting key word and
+        the ending key word, or an empty list if no match"""
         start = self._find_word(words_list, config.START_KEYWORDS)
         if start:
             stop = self._find_word(

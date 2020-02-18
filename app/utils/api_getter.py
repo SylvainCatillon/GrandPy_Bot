@@ -1,3 +1,4 @@
+from random import choice
 import re
 import requests
 
@@ -21,8 +22,8 @@ class ApiGetter:
             "fields": "formatted_address,geometry,name",
             "key": self.google_key}
         raw_result = requests.get(
-            "https://maps.googleapis.com/maps/api/place/\
-findplacefromtext/json",
+            "https://maps.googleapis.com/maps/api/place/"
+            "findplacefromtext/json",
             params=payload)
         return raw_result.json()
 
@@ -32,8 +33,8 @@ findplacefromtext/json",
         payload = {
             "q": "{lat},{lng}".format(**geoloc),
             "key": self.google_key}
-        return "https://www.google.com/maps/embed/v1/place?\
-q={q}&key={key}".format(**payload)
+        return "https://www.google.com/maps/embed/v1/place?" \
+                "q={q}&key={key}".format(**payload)
 
     @staticmethod
     def _request_wikipedia(geoloc):
@@ -67,7 +68,8 @@ q={q}&key={key}".format(**payload)
         """Takes an int arg 'pageid'.
         Requests the Wikipedia Parse API to get the content of the first
         section of the 'pageid' page, in html format.
-        Uses 'BeautifulSoup' lib to convert HTML to plain text.
+        Uses 'BeautifulSoup' lib to get the content of the
+        first paragraph in text format.
         Uses regex 're' lib to eliminate some unwanted text.
         Returns the parsed text of the section and the page title"""
         payload = {
@@ -109,10 +111,10 @@ q={q}&key={key}".format(**payload)
         story, story_title, story_url = self._get_story(geoloc, name)
         return {
             "status": "OK",
-            "address":  config.TEXT["address"].format(
+            "address":  choice(config.TEXT["address"]).format(
                 name=name, address=result["formatted_address"]),
             "map_url": map_url,
-            "story": config.TEXT["story"].format(
+            "story": choice(config.TEXT["story"]).format(
                 story=story, story_title=story_title),
             "story_url": story_url,
             "story_link_text": config.TEXT["story_link"]
@@ -149,6 +151,6 @@ q={q}&key={key}".format(**payload)
         response["status"] = response["status"].upper()
         if response["status"] == "OK":
             return self._construct_result(response["candidates"][0])
-        elif response["status"] == "ZERO_RESULTS":
+        if response["status"] == "ZERO_RESULTS":
             return self._address_not_found()
         return self._construct_fail_result(response)

@@ -18,7 +18,7 @@ else:
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 
 #  The sentences to be used in the program
-TEXT = text.fr_text
+TEXT = text.FR_TEXT
 
 #  The starting and ending keywords to find an address in the user question
 START_KEYWORDS = ["adresse", "où", "l'adresse"]
