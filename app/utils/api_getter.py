@@ -98,10 +98,7 @@ class ApiGetter:
         Returns the story, the page title and the page URL"""
         pages = self._request_wikipedia(geoloc)
         if not pages:
-            return (
-                "...",
-                "Saperlipopette, de quoi est-ce que je parlais déja?",
-                "")
+            return (config.TEXT["failed_story"],"...","")
         pageid = self._select_pageid(pages, name)
         story, title = self._get_section_text(pageid)
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
@@ -151,6 +148,8 @@ class ApiGetter:
         """Takes a list of words as 'words_list'.
         Request an address, and lauchnes a method to get a result,
         accorded to the request status"""
+        if not words_list:
+            return self._address_not_found()
         query = " ".join(words_list)
         response = self._request_address(query)
         #  Next line is to deal with case sensitivity

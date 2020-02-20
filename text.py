@@ -18,6 +18,8 @@ FR_TEXT = dict(
         "Je pourrais en parler pendant des heures: {story_title}. {story}"
     ],
 
+    failed_story="Saperlipopette, de quoi est-ce que je parlais déja?",
+
     story_link="En savoir plus sur Wikipedia",
 
     address_not_found="Désolé mon p'tit, je me souviens plus où c'est...",
