@@ -16,13 +16,13 @@ $(function() {
 				if (result.status == "OK") {
 					// Display the address
 					$("<p></p>", {
-						"class": "alert alert-success mx-3 rounded shadow-lg",
+						"class": "alert alert-success ml-2 mr-5 rounded shadow-lg",
 						text: result.address
 					}).appendTo(dialog_box);
 
 					// Display the map
 					$("<iframe></iframe>", {
-						"class": "mx-auto my-3 d-block",
+						"class": "ml-2 mr-5 my-3 d-block",
 						id: "map", frameborder: 0,
 						style: "border: 0; width: 95%; height: 45%;",
 						allowfullscreen: 1, src: result.map_url,
@@ -34,7 +34,7 @@ $(function() {
 					// Await 3 sec before displaying the story
 					await new Promise(r => setTimeout(r, 2500));
 					var story = $("<p></p>", {
-						"class": "alert alert-success mx-3 rounded shadow-lg",
+						"class": "alert alert-success ml-2 mr-5 rounded shadow-lg",
 						text: result.story
 					})
 					// Append a link to Wikipedia if a story was found
@@ -48,12 +48,12 @@ $(function() {
 
 				} else if (result.status == "ADDRESS_NOT_FOUND") {
 					$("<p></p>", {
-						"class": "alert alert-warning mx-3 rounded shadow-lg",
+						"class": "alert alert-warning ml-2 mr-5 rounded shadow-lg",
 						text: result.message
 					}).appendTo(dialog_box);
 				} else {
 					$("<p></p>", {
-						"class": "alert alert-danger mx-3 rounded shadow-lg",
+						"class": "alert alert-danger ml-2 mr-5 rounded shadow-lg",
 						text: result.message
 					}).appendTo(dialog_box);
 				} 
@@ -71,7 +71,7 @@ $(function() {
 		if (user_message) {
 			// Display the question of the user
 			$("<p></p>", {
-				"class": "alert alert-info mx-3 rounded shadow-lg",
+				"class": "alert alert-info ml-5 mr-2 rounded shadow-lg",
 				text: user_message
 			}).appendTo(dialog_box);
 
