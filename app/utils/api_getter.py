@@ -20,7 +20,10 @@ class ApiGetter:
             "input": query,
             "inputtype": "textquery",
             "fields": "formatted_address,geometry,name",
+            #  As french results are preferable, search is biased by
+            #  a language and a location in the center of France
             "language": "fr",
+            "locationbias": "point:46.5,2",
             "key": self.google_key}
         raw_result = requests.get(
             "https://maps.googleapis.com/maps/api/place/"
@@ -97,7 +100,6 @@ class ApiGetter:
         result = self._request_wiki_parse(pageid)
         if not result or "parse" not in result:
             #  If the content isn't relevant, del the page and try again
-            print(result)
             del pages[0]
             return self._get_section_text(pages)
         html_text = result["parse"]["text"]

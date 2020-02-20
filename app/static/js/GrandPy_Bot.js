@@ -32,14 +32,19 @@ $(function() {
 					dialog_box.scrollTop(dialog_box[0].scrollHeight);
 
 					// Await 3 sec before displaying the story
-					await new Promise(r => setTimeout(r, 3000));
-					$("<p></p>", {
+					await new Promise(r => setTimeout(r, 2500));
+					var story = $("<p></p>", {
 						"class": "alert alert-success mx-3 rounded shadow-lg",
 						text: result.story
-					}).append($("<a></a>", {
-						href: result.story_url,
-						text: result.story_link_text
-					})).appendTo(dialog_box);
+					})
+					// Append a link to Wikipedia if a story was found
+					if (result.story_url.length) {
+						story.append($("<a></a>", {
+							href: result.story_url,
+							text: result.story_link_text
+						}))
+					}
+					story.appendTo(dialog_box);
 
 				} else if (result.status == "ADDRESS_NOT_FOUND") {
 					$("<p></p>", {
