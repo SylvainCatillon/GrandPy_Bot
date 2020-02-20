@@ -38,9 +38,10 @@ class ApiGetter:
                 "q={q}&key={key}".format(**payload)
 
     @staticmethod
-    def _request_wikipedia(geoloc):
+    def _request_wiki_geosearch(geoloc):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'.
-        Requests Wikipedia API and return the result in Json format"""
+        Requests Wikipedia API and its geosearch function
+        and return the result in Json format"""
         payload = {
             "action": "query",
             "list": "geosearch",
@@ -55,59 +56,70 @@ class ApiGetter:
         return raw_result.json()["query"]["geosearch"]
 
     @staticmethod
-    def _select_pageid(pages, name):
+    def _request_wiki_parse(pageid):
+        """Takes an arg 'pageid'.
+        Requests Wikipedia API and its parse function to get the content
+        of the first section and return the result in Json format"""
+        payload = {
+            "action": "parse",
+            "pageid": pageid,
+            "format": "json",
+            "formatversion": 2,
+            "prop": "text",
+            "section": 1
+            }
+        raw_result = requests.get(
+            "https://fr.wikipedia.org/w/api.php",
+            params=payload)
+        return raw_result.json()
+
+    @staticmethod
+    def _search_relevant_page(pages, name):
         """Takes a list of dict as 'pages' and a string as 'name'.
-        Checks if a page has the arg 'name' as title, and return its ID.
-        If there is no match, returns the ID of the first page"""
+        Checks if a page has the arg 'name' as title. If founded,
+        places this page at the start of the list. Returns the list."""
         for index, page in enumerate(pages):
             if page["title"] == name:
                 pages.insert(0, pages.pop(index))
+                break
         return pages
 
-    @staticmethod
-    def _get_section_text(pages):
-        """Takes an int arg 'pageid'.
-        Requests the Wikipedia Parse API to get the content of the first
-        section of the 'pageid' page, in html format.
+    def _get_section_text(self, pages):
+        """Takes a list of pages as arg 'pages'.
+        Gets the content of the first page of the list in html format.
         Uses 'BeautifulSoup' lib to get the content of the
         first paragraph in text format.
         Uses regex 're' lib to eliminate some unwanted text.
         Returns the parsed text of the section and the page title"""
-        for page in pages:
-            payload = {
-                "action": "parse",
-                "pageid": page["pageid"],
-                "format": "json",
-                "formatversion": 2,
-                "prop": "text",
-                "section": 1
-                }
-            raw_result = requests.get(
-                "https://fr.wikipedia.org/w/api.php",
-                params=payload)
-            result = raw_result.json()
-            if not result:
-                continue
-            html_text = result['parse']['text']
-            paragraph = BeautifulSoup(html_text, "html.parser").p
-            if not paragraph:
-                continue
-            raw_text = paragraph.get_text()
-            parsed_text = re.sub("\\[.*]", "", raw_text)
-            title = result['parse']['title']
-            return parsed_text, title
-        return None, None
+        if not pages:
+            return None, None
+        pageid = pages[0]["pageid"]
+        result = self._request_wiki_parse(pageid)
+        if not result:
+            #  If the content isn't relevant, del the page and try again
+            del pages[0]
+            return self._get_section_text(pages)
+        html_text = result['parse']['text']
+        paragraph = BeautifulSoup(html_text, "html.parser").p
+        if not paragraph:
+            #  If the content isn't relevant, del the page and try again
+            del pages[0]
+            return self._get_section_text(pages)
+        raw_text = paragraph.get_text()
+        parsed_text = re.sub("\\[.*]", "", raw_text)
+        title = result['parse']['title']
+        return parsed_text, title, pageid
 
     def _get_story(self, geoloc, name):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'
         and a string as 'name'.
         Launches the methods to get a story from a Wikipedia page.
         Returns the story, the page title and the page URL"""
-        pages = self._request_wikipedia(geoloc)
+        pages = self._request_wiki_geosearch(geoloc)
         if not pages:
             return (config.TEXT["failed_story"],"...","")
-        pageid = self._select_pageid(pages, name)
-        story, title = self._get_section_text(pageid)
+        relevant_pages = self._search_relevant_page(pages, name)
+        story, title, pageid = self._get_section_text(relevant_pages)
         if not story:
             return (config.TEXT["failed_story"],"...","")
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
