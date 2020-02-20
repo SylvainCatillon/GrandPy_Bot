@@ -59,13 +59,13 @@ class ApiGetter:
         """Takes a list of dict as 'pages' and a string as 'name'.
         Checks if a page has the arg 'name' as title, and return its ID.
         If there is no match, returns the ID of the first page"""
-        for page in pages:
+        for index, page in enumerate(pages):
             if page["title"] == name:
-                return page["pageid"]
-        return pages[0]["pageid"]
+                pages.insert(0, pages.pop(index))
+        return pages
 
     @staticmethod
-    def _get_section_text(pageid):
+    def _get_section_text(pages):
         """Takes an int arg 'pageid'.
         Requests the Wikipedia Parse API to get the content of the first
         section of the 'pageid' page, in html format.
@@ -73,23 +73,30 @@ class ApiGetter:
         first paragraph in text format.
         Uses regex 're' lib to eliminate some unwanted text.
         Returns the parsed text of the section and the page title"""
-        payload = {
-            "action": "parse",
-            "pageid": pageid,
-            "format": "json",
-            "formatversion": 2,
-            "prop": "text",
-            "section": 1
-            }
-        raw_result = requests.get(
-            "https://fr.wikipedia.org/w/api.php",
-            params=payload)
-        result = raw_result.json()
-        html_text = result['parse']['text']
-        raw_text = BeautifulSoup(html_text, "html.parser").p.get_text()
-        parsed_text = re.sub("\\[.*]", "", raw_text)
-        title = result['parse']['title']
-        return parsed_text, title
+        for page in pages:
+            payload = {
+                "action": "parse",
+                "pageid": page["pageid"],
+                "format": "json",
+                "formatversion": 2,
+                "prop": "text",
+                "section": 1
+                }
+            raw_result = requests.get(
+                "https://fr.wikipedia.org/w/api.php",
+                params=payload)
+            result = raw_result.json()
+            if not result:
+                continue
+            html_text = result['parse']['text']
+            paragraph = BeautifulSoup(html_text, "html.parser").p
+            if not paragraph:
+                continue
+            raw_text = paragraph.get_text()
+            parsed_text = re.sub("\\[.*]", "", raw_text)
+            title = result['parse']['title']
+            return parsed_text, title
+        return None, None
 
     def _get_story(self, geoloc, name):
         """Takes an arg {"lat":float,"lng":float} as 'geoloc'
@@ -101,6 +108,8 @@ class ApiGetter:
             return (config.TEXT["failed_story"],"...","")
         pageid = self._select_pageid(pages, name)
         story, title = self._get_section_text(pageid)
+        if not story:
+            return (config.TEXT["failed_story"],"...","")
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
         return story, title, url
 
