@@ -92,14 +92,15 @@ class ApiGetter:
         Uses regex 're' lib to eliminate some unwanted text.
         Returns the parsed text of the section and the page title"""
         if not pages:
-            return None, None
+            return None, None, None
         pageid = pages[0]["pageid"]
         result = self._request_wiki_parse(pageid)
-        if not result:
+        if not result or "parse" not in result:
             #  If the content isn't relevant, del the page and try again
+            print(result)
             del pages[0]
             return self._get_section_text(pages)
-        html_text = result['parse']['text']
+        html_text = result["parse"]["text"]
         paragraph = BeautifulSoup(html_text, "html.parser").p
         if not paragraph:
             #  If the content isn't relevant, del the page and try again
@@ -107,7 +108,7 @@ class ApiGetter:
             return self._get_section_text(pages)
         raw_text = paragraph.get_text()
         parsed_text = re.sub("\\[.*]", "", raw_text)
-        title = result['parse']['title']
+        title = result["parse"]["title"]
         return parsed_text, title, pageid
 
     def _get_story(self, geoloc, name):
@@ -117,11 +118,11 @@ class ApiGetter:
         Returns the story, the page title and the page URL"""
         pages = self._request_wiki_geosearch(geoloc)
         if not pages:
-            return (config.TEXT["failed_story"],"...","")
+            return (config.TEXT["failed_story"], "...", "")
         relevant_pages = self._search_relevant_page(pages, name)
         story, title, pageid = self._get_section_text(relevant_pages)
         if not story:
-            return (config.TEXT["failed_story"],"...","")
+            return (config.TEXT["failed_story"], "...", "")
         url = "https://fr.wikipedia.org/?curid={}".format(pageid)
         return story, title, url
 
