@@ -20,10 +20,9 @@ class ApiGetter:
             "input": query,
             "inputtype": "textquery",
             "fields": "formatted_address,geometry,name",
-            #  As french results are preferable, search is biased by
-            #  a language and a location in the center of France
-            "language": "fr",
-            "locationbias": "point:46.5,2",
+            #  Search is biased by a language and a location
+            "language": config.API_LANGUAGE,
+            "locationbias": "point:{lat},{lng}".format(**config.LOCATION_BIAS),
             "key": self.google_key}
         raw_result = requests.get(
             "https://maps.googleapis.com/maps/api/place/"
@@ -54,7 +53,7 @@ class ApiGetter:
             "format": "json"
             }
         raw_result = requests.get(
-            "https://fr.wikipedia.org/w/api.php",
+            f"https://{config.API_LANGUAGE}.wikipedia.org/w/api.php",
             params=payload)
         return raw_result.json()["query"]["geosearch"]
 
@@ -72,7 +71,7 @@ class ApiGetter:
             "section": 1
             }
         raw_result = requests.get(
-            "https://fr.wikipedia.org/w/api.php",
+            f"https://{config.API_LANGUAGE}.wikipedia.org/w/api.php",
             params=payload)
         return raw_result.json()
 
@@ -125,7 +124,7 @@ class ApiGetter:
         story, title, pageid = self._get_section_text(relevant_pages)
         if not story:
             return (config.TEXT["failed_story"], "...", "")
-        url = "https://fr.wikipedia.org/?curid={}".format(pageid)
+        url = f"https://{config.API_LANGUAGE}.wikipedia.org/?curid={pageid}"
         return story, title, url
 
     def _construct_result(self, result):

@@ -26,3 +26,9 @@ END_KEYWORDS = ["?", ".", "!", ";"]
 
 #  The words to delete from the user question
 STOPWORDS = STOPWORDS_LIST+["grandpy", "bot", "grandpybot"]
+
+#  The language code for Maps and Wikipedia requests
+API_LANGUAGE = "fr"
+
+#  The location point as {'lat':,'lng':} around wich the Maps request is biased
+LOCATION_BIAS = {"lat": 46.5, "lng": 2}
