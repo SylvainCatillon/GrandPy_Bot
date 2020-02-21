@@ -71,7 +71,7 @@ $(function() {
 		if (user_message) {
 			// Display the question of the user
 			$("<p></p>", {
-				"class": "alert alert-info ml-5 mr-2 rounded shadow-lg",
+				"class": "alert alert-primary ml-5 mr-2 rounded shadow-lg",
 				text: user_message
 			}).appendTo(dialog_box);
 

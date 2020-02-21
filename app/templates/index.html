@@ -18,13 +18,13 @@
           <nav class="navbar navbar-expand-sm navbar-light bg-white">
             <span class="navbar-brand" style="text-align: center;">
               <img class="d-inline" src="{{url_for('static', filename='images/logo.jpg')}}" alt="logo" width="10%" height="10%">
-                <span class="navbar-text h2 text-success font-weight-light ml-3">
-                  <!-- Header texte for computers-->
-                  <span class="d-none d-lg-inline">{{config.TEXT["long_header"]}}</span>
-                  <!-- Header texte for smartphone and tablets-->
-                  <span class="d-inline d-lg-none">{{config.TEXT["short_header"]}}</span>
-           </span>
-                 </span>
+              <span class="navbar-text h2 text-success font-weight-light ml-3">
+                <!-- Header texte for computers-->
+                <span class="d-none d-lg-inline">{{config.TEXT["long_header"]}}</span>
+                <!-- Header texte for smartphone and tablets-->
+                <span class="d-inline d-lg-none">{{config.TEXT["short_header"]}}</span>
+              </span>
+            </span>
           </nav>
       </header>
       <div class="container mb-5" style="background-color: rgba(220,220,220,0.7);">
@@ -32,7 +32,7 @@
           <div class="col">
             <form id="user_form">
               <div class="form-group my-4 h5">
-                <label for="userMessage">{{config.TEXT["form_label"]}}</label>
+                <label for="user_message">{{config.TEXT["form_label"]}}</label>
                 <input type="text" class="form-control" id="user_message" placeholder="{{config.TEXT['form_placeholder']}}">
               </div>
             </form>
@@ -41,21 +41,18 @@
         </section>
         <a href="https://www.freepik.com/free-photos-vectors/background" class="text-muted">Background photo created by freepik - www.freepik.com</a>
       </div>
-      <footer class="page-footer font-small bg-success fixed-bottom">
+      <footer class="page-footer font-small bg-info fixed-bottom">
         <div class="container">
           <span class="footer-copyright text-center">© 2020 Copyright: Sylvain Catillon
-            <a href="https://github.com/SylvainCatillon/GrandPy_Bot" class="badge badge-secondary" target="_blank">GitHub</a>
-            <a href="https://www.linkedin.com/in/sylvain-catillon-01691b188" class="badge badge-info" target="_blank">LinkedIn</a>
+            <a href="https://github.com/SylvainCatillon/GrandPy_Bot" class="badge badge-dark" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/sylvain-catillon-01691b188" class="badge badge-light" target="_blank" rel="noreferrer">LinkedIn</a>
           </span>
 	  	</div>
       </footer>
     </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- JQuerry -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <!-- Javascript functions -->
     <script src="{{url_for('static', filename='js/GrandPy_Bot.js')}}"></script>
