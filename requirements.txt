@@ -4,7 +4,7 @@
 # app\__init__.py: 1
 # app\tests\__init__.py: 1
 # app\views.py: 1
-Flask == 1.1.1
+Flask == 2.3.2
 
 # app\utils\api_getter.py: 4
 beautifulsoup4 == 4.8.2
